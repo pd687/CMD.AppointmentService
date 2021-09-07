@@ -9,7 +9,6 @@ namespace AppointmentUnitTest
         [TestMethod]
         public void TestMethod1()
         {
-
         }
     }
 }

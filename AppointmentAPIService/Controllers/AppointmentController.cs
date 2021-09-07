@@ -1,4 +1,7 @@
-﻿using CMD.Appointment.Domain.Managers;
+﻿using AppointmentAPIService.Models;
+using CMD.Appointment.Domain.ApiModels;
+using CMD.Appointment.Domain.Managers;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -9,13 +12,7 @@ namespace AppointmentAPIService.Controllers
     public class AppointmentController : ApiController
     {
         //IAppointmentManager mng = new AppointmentManager(new AppointmentRepository());
-        private readonly IAppointmentManager mng = null;
-
-        public AppointmentController(IAppointmentManager mng)
-        {
-            this.mng = mng;
-        }
-
+        IAppointmentManager mng = ManagerFactory.CreateManager();
 
         #region Sync
         // GET api/appointment
@@ -66,7 +63,7 @@ namespace AppointmentAPIService.Controllers
         }
 
         // GET api/appointment/5
-        public async Task<IHttpActionResult> GetAppointmentById(int id)
+        public async Task<IHttpActionResult> Get(int id)
         {
             var appointment = await mng.GetAppointmentByIdAsync(id);
             return Ok(appointment);

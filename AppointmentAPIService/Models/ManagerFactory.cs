@@ -11,13 +11,10 @@ namespace AppointmentAPIService.Models
         static ManagerFactory()
         {
             container = new UnityContainer();
+
             container.RegisterType<IAppointmentManager, AppointmentManager>();
             container.RegisterType<IAppointmentRepository, AppointmentRepository>();
         }
-
-
-
-
 
         public static IAppointmentManager CreateManager()
         {

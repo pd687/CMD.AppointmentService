@@ -106,37 +106,29 @@ namespace CMD.Appointment.Domain.Managers
 
         async Task<IQueryable<AppointmentAPIModel>> IAppointmentManager.GetAllAppointmentsAsync()
         {
-            try
+            var cached_allAppointmentAsync = _cache.Get("Appointments");
+            if (cached_allAppointmentAsync != null)
+                return (IQueryable<AppointmentAPIModel>)cached_allAppointmentAsync;
+
+            var appointments = await repo.GetAllAppointmentsAsync();
+
+            var config = new MapperConfiguration(cfg =>
             {
-                var cached_allAppointmentAsync = _cache.Get("Appointments");
-                if (cached_allAppointmentAsync != null)
-                    return (IQueryable<AppointmentAPIModel>)cached_allAppointmentAsync;
+                cfg.CreateMap<Entities.Appointment, AppointmentAPIModel>();
+            });
 
-                var appointments = await repo.GetAllAppointmentsAsync();
+            var mapper = new Mapper(config);
 
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<Entities.Appointment, AppointmentAPIModel>();
-                });
+            var result = new List<AppointmentAPIModel>();
 
-                var mapper = new Mapper(config);
-
-                var result = new List<AppointmentAPIModel>();
-
-                foreach (var item in appointments)
-                {
-                    result.Add(mapper.Map<AppointmentAPIModel>(item));
-                }
-
-                _cache.Set("Appointments", result, DateTimeOffset.Now.AddMinutes(10));
-
-                return result.AsQueryable();
-            }
-            catch (Exception ex)
+            foreach (var item in appointments)
             {
-
-                throw ex;
+                result.Add(mapper.Map<AppointmentAPIModel>(item));
             }
+
+            _cache.Set("Appointments", result, DateTimeOffset.Now.AddMinutes(10));
+
+            return result.AsQueryable();
         }
 
         async Task<IQueryable<AppointmentAPIModel>> IAppointmentManager.GetAllAppointmentsByPatientIdAsync(int id)
