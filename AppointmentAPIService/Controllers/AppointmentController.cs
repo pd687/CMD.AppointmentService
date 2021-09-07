@@ -1,6 +1,7 @@
-﻿using AppointmentAPIService.Models;
-using CMD.Appointment.Domain.ApiModels;
+﻿using CMD.Appointment.Domain.ApiModels;
 using CMD.Appointment.Domain.Managers;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -60,16 +61,43 @@ namespace AppointmentAPIService.Controllers
         // GET api/appointment
         public async Task<IHttpActionResult> Get()
         {
-
-            var appointments = await mng.GetAllAppointmentsAsync();
-            return Ok(appointments);
+            try
+            {
+                var appointments = await mng.GetAllAppointmentsAsync();
+                return Ok(appointments);
+            }
+            catch(Exception e)
+            {
+                var logger = LogManager.GetLogger("databaseLogger");
+                logger.Error(e);
+                throw e;
+            }
         }
 
         // GET api/appointment/5
         public async Task<IHttpActionResult> Get(int id)
         {
-            var appointment = await mng.GetAppointmentByIdAsync(id);
-            return Ok(appointment);
+            try
+            {
+                var appointment = await mng.GetAppointmentByIdAsync(id);
+                var a = 10;
+                var b = 0;
+                var c = a / b;
+                return Ok(appointment);
+            }
+            catch(Exception e)
+            {
+                var logger = LogManager.GetLogger("databaseLogger");
+                if (e.InnerException != null)
+                {
+                    logger.Error(new Exception(e.Message, e.InnerException));
+                }
+                else
+                {
+                    logger.Error(e);
+                }
+                throw e;
+            }
         }
 
         // GET api/appointment/patient/5
@@ -78,14 +106,32 @@ namespace AppointmentAPIService.Controllers
         public async Task<IHttpActionResult> GetAllAppointmentsByPatientId(int id)
         {
 
-            return Ok(await mng.GetAllAppointmentsByPatientIdAsync(id));
+            try
+            {
+                return Ok(await mng.GetAllAppointmentsByPatientIdAsync(id));
+            }
+            catch(Exception e)
+            {
+                var logger = LogManager.GetLogger("databaseLogger");
+                logger.Error(e);
+                throw e;
+            }
         }
 
         // POST api/appointment/accept/1
         [Route("accept/{id}")]
         public async Task<IHttpActionResult> Post(int Id)
         {
-            return Ok(await mng.AcceptAppointmentAsync(Id));
+            try
+            {
+                return Ok(await mng.AcceptAppointmentAsync(Id));
+            }
+            catch(Exception e)
+            {
+                var logger = LogManager.GetLogger("databaseLogger");
+                logger.Error(e);
+                throw e;
+            }
         }
 
 
@@ -93,7 +139,16 @@ namespace AppointmentAPIService.Controllers
         [Route("reject/{id}")]
         public async Task<IHttpActionResult> PostReject(int Id)
         {
-            return Ok(await mng.RejectAppointmentAsync(Id));
+            try
+            {
+                return Ok(await mng.RejectAppointmentAsync(Id));
+            }
+            catch(Exception e)
+            {
+                var logger = LogManager.GetLogger("databaseLogger");
+                logger.Error(e);
+                throw e;
+            }
         }
 
 

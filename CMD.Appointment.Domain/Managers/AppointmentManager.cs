@@ -133,6 +133,7 @@ namespace CMD.Appointment.Domain.Managers
 
         async Task<IQueryable<AppointmentAPIModel>> IAppointmentManager.GetAllAppointmentsByPatientIdAsync(int id)
         {
+            throw new Exception("Manager exe");
             var cached_allAppointmentAsync = _cache.Get(String.Concat("PatientAppointment", id));
             if (cached_allAppointmentAsync != null)
                 return (IQueryable<AppointmentAPIModel>)cached_allAppointmentAsync;

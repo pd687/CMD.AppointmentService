@@ -13,13 +13,13 @@ namespace AppointmentAPIService
     {
         public static void RegisterComponents()
         {
-            var container = new Unity.UnityContainer();
+            IUnityContainer container = new UnityContainer();
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
 
             // e.g. container.RegisterType<ITestService, TestService>();
-            //var unity = ConfigurationManager.GetSection("unity") as IUnityContainer;
+            //var contianer = ConfigurationManager.GetSection("unity") as IUnityContainer;
 
             container.RegisterType<IAppointmentManager, AppointmentManager>();
             container.RegisterType<IAppointmentRepository, AppointmentRepository>();
