@@ -80,9 +80,6 @@ namespace AppointmentAPIService.Controllers
             try
             {
                 var appointment = await mng.GetAppointmentByIdAsync(id);
-                var a = 10;
-                var b = 0;
-                var c = a / b;
                 return Ok(appointment);
             }
             catch(Exception e)
@@ -150,9 +147,6 @@ namespace AppointmentAPIService.Controllers
                 throw e;
             }
         }
-
-
-
         #endregion
 
 

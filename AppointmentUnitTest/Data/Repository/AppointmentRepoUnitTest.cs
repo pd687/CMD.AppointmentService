@@ -8,7 +8,7 @@ namespace AppointmentUnitTest.Data.Repository
         [TestMethod]
         public void GetAllAppointments_ValidResult()
         {
-
+            
         }
     }
 }
