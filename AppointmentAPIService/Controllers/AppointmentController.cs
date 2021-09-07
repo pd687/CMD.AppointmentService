@@ -12,8 +12,11 @@ namespace AppointmentAPIService.Controllers
     public class AppointmentController : ApiController
     {
         //IAppointmentManager mng = new AppointmentManager(new AppointmentRepository());
-        IAppointmentManager mng = ManagerFactory.CreateManager();
-
+        IAppointmentManager mng = null;
+        public AppointmentController(IAppointmentManager mng)
+        {
+            this.mng = mng;
+        }
         #region Sync
         // GET api/appointment
         /*public IEnumerable<AppointmentAPIModel> Get()
