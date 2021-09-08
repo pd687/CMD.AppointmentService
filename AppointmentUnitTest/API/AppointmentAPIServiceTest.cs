@@ -64,8 +64,6 @@ namespace AppointmentUnitTest.API
             IHttpActionResult actionResult = await controller.Get(2);
             var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
             // Assert
-            Assert.IsNotNull(contentResult);
-            Assert.IsNotNull(contentResult.Content);
             Assert.AreEqual(2, contentResult.Content.Id);
         }
         [TestMethod]
@@ -228,8 +226,6 @@ namespace AppointmentUnitTest.API
             IHttpActionResult actionResult = await controller.Get(2);
             var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
             // Assert
-            Assert.IsNotNull(contentResult);
-            Assert.IsNotNull(contentResult.Content);
             Assert.AreNotEqual(2, contentResult.Content.Id);
         }
 
@@ -245,21 +241,28 @@ namespace AppointmentUnitTest.API
             //Act
             IHttpActionResult actionResult = await controller.GetAllAppointmentsByPatientId(1);
             var contentResult = actionResult as OkNegotiatedContentResult<IQueryable<AppointmentAPIModel>>;
-            var expected = appointments;
+            var expected = GetAppointments().Where(a => a.PatientId == 1).ToList();
             var actual = contentResult.Content.ToList();
 
             //Assert
-            Assert.IsNotNull(contentResult);
-            Assert.IsNotNull(contentResult.Content);
-            Assert.AreEqual(appointments.Count, contentResult.Content.Count());
-            for (int i = 0; i < expected.Count; i++)
-            {
-                Assert.AreEqual(expected[i].Id, actual[i].Id);
-                Assert.AreEqual(expected[i].AppointmentTime, actual[i].AppointmentTime);
-                Assert.AreEqual(expected[i].DoctorId, actual[i].DoctorId);
-                Assert.AreEqual(expected[i].PatientId, actual[i].PatientId);
-                Assert.AreEqual(expected[i].Status, actual[i].Status);
-            }
+            Assert.AreNotEqual(expected.Count, actual.Count);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(NullReferenceException))]
+        public async Task InvalidAppointmentId_ShouldThrowException()
+        {
+            //Arrange
+            var appointment = GetAppointments().Where(a => a.Id == 11).FirstOrDefault();
+            var mockRepo = new Mock<IAppointmentManager>();
+            mockRepo.Setup(x => x.GetAppointmentByIdAsync(11)).ReturnsAsync(appointment);
+            var controller = new AppointmentController(mockRepo.Object);
+
+            //Act
+            IHttpActionResult actionResult = await controller.Get(11);
+            var contentResult = actionResult as OkNegotiatedContentResult<IQueryable<AppointmentAPIModel>>;
+            var expected = GetAppointments().Where(a => a.Id == 11).ToList();
+            var actual = contentResult.Content.ToList();
+
         }
 
         [TestMethod]
@@ -298,7 +301,7 @@ namespace AppointmentUnitTest.API
                 new AppointmentAPIModel(){Id=4, DoctorId=1, PatientId=1,Status="pending", AppointmentTime = new DateTime(2020, 05, 05)},
                 new AppointmentAPIModel(){Id=5, DoctorId=1, PatientId=1,Status="pending", AppointmentTime = new DateTime(2020, 05, 05)},
                 new AppointmentAPIModel(){Id=6, DoctorId=1, PatientId=1,Status="pending", AppointmentTime = new DateTime(2020, 05, 05)},
-                new AppointmentAPIModel(){Id=7, DoctorId=1, PatientId=1,Status="pending", AppointmentTime = new DateTime(2020, 05, 05)},
+                new AppointmentAPIModel(){Id=7, DoctorId=1, PatientId=2,Status="pending", AppointmentTime = new DateTime(2020, 05, 05)},
             };
         }
     }
