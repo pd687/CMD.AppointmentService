@@ -104,7 +104,7 @@ namespace CMD.Appointment.Domain.Managers
         #region Async
 
 
-        async Task<IQueryable<AppointmentAPIModel>> IAppointmentManager.GetAllAppointmentsAsync()
+        public async Task<IQueryable<AppointmentAPIModel>> GetAllAppointmentsAsync()
         {
             var cached_allAppointmentAsync = _cache.Get("Appointments");
             if (cached_allAppointmentAsync != null)
@@ -131,7 +131,7 @@ namespace CMD.Appointment.Domain.Managers
             return result.AsQueryable();
         }
 
-        async Task<IQueryable<AppointmentAPIModel>> IAppointmentManager.GetAllAppointmentsByPatientIdAsync(int id)
+        public async Task<IQueryable<AppointmentAPIModel>> GetAllAppointmentsByPatientIdAsync(int id)
         {
             var cached_allAppointmentAsync = _cache.Get(String.Concat("PatientAppointment", id));
             if (cached_allAppointmentAsync != null)
@@ -158,7 +158,7 @@ namespace CMD.Appointment.Domain.Managers
             return result.AsQueryable();
         }
 
-        async Task<AppointmentAPIModel> IAppointmentManager.GetAppointmentByIdAsync(int id)
+        public async Task<AppointmentAPIModel> GetAppointmentByIdAsync(int id)
         {
             var cached_allAppointmentAsync = _cache.Get(String.Concat("PatientAppointment", id));
             if (cached_allAppointmentAsync != null)
@@ -178,12 +178,10 @@ namespace CMD.Appointment.Domain.Managers
             return mapper.Map<AppointmentAPIModel>(appointment);
         }
 
-        async Task<AppointmentAPIModel> IAppointmentManager.AcceptAppointmentAsync(int id)
+        public async Task<AppointmentAPIModel> AcceptAppointmentAsync(int id)
         {
 
-            var appointment = await repo.GetAppointmentByIdAsync(id);
-
-            appointment.Status = "accepted";
+            var appointment = await repo.AcceptAppointmentAsync(id);
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Entities.Appointment, AppointmentAPIModel>();
@@ -193,10 +191,9 @@ namespace CMD.Appointment.Domain.Managers
 
         }
 
-        async Task<AppointmentAPIModel> IAppointmentManager.RejectAppointmentAsync(int id)
+        public async Task<AppointmentAPIModel> RejectAppointmentAsync(int id)
         {
-            var appointment = await repo.GetAppointmentByIdAsync(id);
-            appointment.Status = "rejected";
+            var appointment = await repo.RejectAppointmentAsync(id);
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Entities.Appointment, AppointmentAPIModel>();
