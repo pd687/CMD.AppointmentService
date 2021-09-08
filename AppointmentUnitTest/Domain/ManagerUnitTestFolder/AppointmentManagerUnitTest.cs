@@ -237,8 +237,123 @@ namespace AppointmentAPIModelUnitTest.Domain.Manager
 
         #endregion
 
+        #region InValid Tests
+
+        #region Sync
+
+        [TestMethod]
+        public void GetAppointmentById_ShouldReturnNull_WithInvalidAppointmentId()
+        {
+
+            //Arrange
+            var mgr = new AppointmentManager(mockRepo.Object);
+
+            //Act
+
+            var mgrAppointment = mgr.GetAppointmentById(4);
+
+            //Assert
+
+            Assert.IsNull(mgrAppointment);
+
+        }
+
+        [TestMethod]
+        public void AcceptAppointment_ShouldReturnNull_WithInvalidAppointmentId()
+        {
+
+            //Arrange
+            var mgr = new AppointmentManager(mockRepo.Object);
+
+            //Act
+
+            var mgrAppointment = mgr.AcceptAppointment(4);
+
+            //Assert
+
+            Assert.IsNull(mgrAppointment);
+
+        }
 
 
+        [TestMethod]
+        public void RejectAppointment_ShouldReturnNull_WithInvalidAppointmentId()
+        {
+
+            //Arrange
+            var mgr = new AppointmentManager(mockRepo.Object);
+
+            //Act
+
+            var mgrAppointment = mgr.RejectAppointment(4);
+
+            //Assert
+
+            Assert.IsNull(mgrAppointment);
+
+        }
+
+
+        #endregion
+
+        #region Async
+
+        [TestMethod]
+        public async Task GetAppointmentByIdAsync_ShouldReturnNull_WithInvalidAppointmentId()
+        {
+
+            //Arrange
+            var mgr = new AppointmentManager(mockRepo.Object);
+
+            //Act
+
+            var mgrAppointment = await mgr.GetAppointmentByIdAsync(4);
+
+            //Assert
+
+            Assert.IsNull(mgrAppointment);
+
+        }
+
+        [TestMethod]
+        public async Task AcceptAppointmentAsync_ShouldReturnNull_WithInvalidAppointmentId()
+        {
+
+            //Arrange
+            var mgr = new AppointmentManager(mockRepo.Object);
+
+            //Act
+
+            var mgrAppointment = await mgr.AcceptAppointmentAsync(4);
+
+            //Assert
+
+            Assert.IsNull(mgrAppointment);
+
+        }
+
+
+        [TestMethod]
+        public async Task RejectAppointmentAsync_ShouldReturnNull_WithInvalidAppointmentId()
+        {
+
+            //Arrange
+            var mgr = new AppointmentManager(mockRepo.Object);
+
+            //Act
+
+            var mgrAppointment = await mgr.RejectAppointmentAsync(4);
+
+            //Assert
+
+            Assert.IsNull(mgrAppointment);
+
+        }
+
+
+        #endregion
+
+        #endregion
         private List<Appointment> GetAppointment()
         {
             return new List<Appointment>()

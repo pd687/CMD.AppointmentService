@@ -146,7 +146,7 @@ namespace CMD.Appointment.Domain.Managers
         /// <returns>Task<IQueryable<AppointmentAPIModel>></returns>
         public async Task<IQueryable<AppointmentAPIModel>> GetAllAppointmentsByPatientIdAsync(int id)
         {
-            var cached_allAppointmentAsync = _cache.Get(String.Concat("PatientAppointment", id));
+            var cached_allAppointmentAsync = _cache.Get(String.Concat("PatientAppointment-", id));
             if (cached_allAppointmentAsync != null)
                 return (IQueryable<AppointmentAPIModel>)cached_allAppointmentAsync;
 
@@ -166,7 +166,7 @@ namespace CMD.Appointment.Domain.Managers
                 result.Add(mapper.Map<AppointmentAPIModel>(item));
             }
 
-            _cache.Set(String.Concat("ActiveIssue-", id), result, DateTimeOffset.Now.AddMinutes(10));
+            _cache.Set(String.Concat("PatientAppointment-", id), result, DateTimeOffset.Now.AddMinutes(10));
 
             return result.AsQueryable();
         }
@@ -177,7 +177,7 @@ namespace CMD.Appointment.Domain.Managers
         /// <returns>Task<AppointmentAPIModel></returns>
         public async Task<AppointmentAPIModel> GetAppointmentByIdAsync(int id)
         {
-            var cached_allAppointmentAsync = _cache.Get(String.Concat("PatientAppointment", id));
+            var cached_allAppointmentAsync = _cache.Get(String.Concat("Appointment-", id));
             if (cached_allAppointmentAsync != null)
                 return (AppointmentAPIModel)cached_allAppointmentAsync;
 
@@ -190,7 +190,7 @@ namespace CMD.Appointment.Domain.Managers
             });
             Mapper mapper = new Mapper(config);
 
-            //_cache.Set(String.Concat("ActiveIssue-", id), result, DateTimeOffset.Now.AddMinutes(10));/**/
+            _cache.Set(String.Concat("Appointment-", id), mapper.Map<AppointmentAPIModel>(appointment), DateTimeOffset.Now.AddMinutes(10));/**/
 
             return mapper.Map<AppointmentAPIModel>(appointment);
         }
