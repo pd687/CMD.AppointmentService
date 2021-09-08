@@ -13,15 +13,21 @@ namespace CMD.Appointment.Domain.Managers
 
         private readonly Repositories.IAppointmentRepository repo;
 
+        /// <summary>
+        /// Implementing Cache.
+        /// </summary>
         private readonly ObjectCache _cache = new MemoryCache("PatientCache");
 
-
-        #region Sync
-
+        /// <summary>
+        /// Injecting Dependency using Unity IoC container.
+        /// </summary>
+        /// <param name="repo">IAppointmentReposity</param>
         public AppointmentManager(Repositories.IAppointmentRepository repo)
         {
             this.repo = repo;
         }
+        #region Sync
+
 
         public IEnumerable<AppointmentAPIModel> GetAllAppointments()
         {
@@ -103,7 +109,10 @@ namespace CMD.Appointment.Domain.Managers
 
         #region Async
 
-
+        /// <summary>
+        /// Returns all the Appointments from the Repository.
+        /// </summary>
+        /// <returns>Task<IQueryable<AppointmentAPIModel>></returns>
         public async Task<IQueryable<AppointmentAPIModel>> GetAllAppointmentsAsync()
         {
             var cached_allAppointmentAsync = _cache.Get("Appointments");
@@ -130,7 +139,11 @@ namespace CMD.Appointment.Domain.Managers
 
             return result.AsQueryable();
         }
-
+        /// <summary>
+        ///  Get Appointments for a Patient by PatientId
+        /// </summary>
+        /// <param name="id">Patient Id</param>
+        /// <returns>Task<IQueryable<AppointmentAPIModel>></returns>
         public async Task<IQueryable<AppointmentAPIModel>> GetAllAppointmentsByPatientIdAsync(int id)
         {
             var cached_allAppointmentAsync = _cache.Get(String.Concat("PatientAppointment", id));
@@ -157,7 +170,11 @@ namespace CMD.Appointment.Domain.Managers
 
             return result.AsQueryable();
         }
-
+        /// <summary>
+        /// Appointment by Appointment Id.
+        /// </summary>
+        /// <param name="id">Appointment Id</param>
+        /// <returns>Task<AppointmentAPIModel></returns>
         public async Task<AppointmentAPIModel> GetAppointmentByIdAsync(int id)
         {
             var cached_allAppointmentAsync = _cache.Get(String.Concat("PatientAppointment", id));
@@ -177,7 +194,11 @@ namespace CMD.Appointment.Domain.Managers
 
             return mapper.Map<AppointmentAPIModel>(appointment);
         }
-
+        /// <summary>
+        /// Accepting a Particular Appointment by Id.
+        /// </summary>
+        /// <param name="id">Appointment Id</param>
+        /// <returns>Task<AppointmentAPIModel></returns>
         public async Task<AppointmentAPIModel> AcceptAppointmentAsync(int id)
         {
 
@@ -190,7 +211,11 @@ namespace CMD.Appointment.Domain.Managers
             return mapper.Map<AppointmentAPIModel>(appointment);
 
         }
-
+        /// <summary>
+        /// Rejecting the Particular Appointment
+        /// </summary>
+        /// <param name="id">Appointment Id</param>
+        /// <returns>Task<AppointmentAPIModel></returns>
         public async Task<AppointmentAPIModel> RejectAppointmentAsync(int id)
         {
             var appointment = await repo.RejectAppointmentAsync(id);
