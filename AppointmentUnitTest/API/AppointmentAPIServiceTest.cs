@@ -1,6 +1,7 @@
 ﻿using AppointmentAPIService.Controllers;
 using CMD.Appointment.Domain.ApiModels;
 using CMD.Appointment.Domain.Managers;
+using CMD.Appointment.Domain.Repositories;
 using Data.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -34,7 +35,8 @@ namespace AppointmentUnitTest.API
             var expected = GetAppointments();
             var actual = contentResult.Content.ToList();
             // Assert
-            Assert.IsNotNull(contentResult);
+            #region commented
+            /*Assert.IsNotNull(contentResult);
             Assert.IsNotNull(contentResult.Content);
             for(int i = 0; i < expected.Count; i++)
             {
@@ -44,13 +46,16 @@ namespace AppointmentUnitTest.API
                 Assert.AreEqual(expected[i].PatientId, actual[i].PatientId);
                 Assert.AreEqual(expected[i].Status, actual[i].Status);
             }
+            CollectionAssert.AreEqual(expected, actual);*/
+            #endregion
+            Assert.AreEqual(expected.Count, actual.Count);
         }
         [TestMethod]
-        public async Task GetAppoinementReturnsAppointmentWithSameIdAsync()
+        public async Task GetAppoinementReturnsAppointmentWithSameIdAsync_ValidId()
         {
             //Arrange
             var mockRepo = new Mock<IAppointmentManager>();
-            mockRepo.Setup(x => x.GetAppointmentByIdAsync(2)).ReturnsAsync(new AppointmentAPIModel { Id = 2 });
+            mockRepo.Setup(x => x.GetAppointmentByIdAsync(2)).ReturnsAsync(GetAppointments().Where(a => a.Id == 2).First());
 
             /*var controller = new AppointmentController(new AppointmentManager(new AppointmentRepository()));*/
             var controller = new AppointmentController(mockRepo.Object);
@@ -63,7 +68,75 @@ namespace AppointmentUnitTest.API
             Assert.IsNotNull(contentResult.Content);
             Assert.AreEqual(2, contentResult.Content.Id);
         }
-        
+        [TestMethod]
+        public async Task GetAppoinementReturnsAppointmentWithSameIdAsync_ValidAppointmentTime()
+        {
+            //Arrange
+            var mockRepo = new Mock<IAppointmentManager>();
+            mockRepo.Setup(x => x.GetAppointmentByIdAsync(2)).ReturnsAsync(GetAppointments().Where(a => a.Id == 2).First());
+
+            /*var controller = new AppointmentController(new AppointmentManager(new AppointmentRepository()));*/
+            var controller = new AppointmentController(mockRepo.Object);
+
+            //Act
+            var expected = GetAppointments().Where(a => a.Id == 2).First();
+            IHttpActionResult actionResult = await controller.Get(2);
+            var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
+            // Assert
+            Assert.AreEqual(expected.AppointmentTime, contentResult.Content.AppointmentTime);
+        }
+        [TestMethod]
+        public async Task GetAppoinementReturnsAppointmentWithSameIdAsync_ValidDoctorId()
+        {
+            //Arrange
+            var mockRepo = new Mock<IAppointmentManager>();
+            mockRepo.Setup(x => x.GetAppointmentByIdAsync(2)).ReturnsAsync(GetAppointments().Where(a => a.Id == 2).First());
+
+            /*var controller = new AppointmentController(new AppointmentManager(new AppointmentRepository()));*/
+            var controller = new AppointmentController(mockRepo.Object);
+
+            //Act
+            var expected = GetAppointments().Where(a => a.Id == 2).First();
+            IHttpActionResult actionResult = await controller.Get(2);
+            var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
+            // Assert
+            Assert.AreEqual(expected.DoctorId, contentResult.Content.DoctorId);
+        }
+        [TestMethod]
+        public async Task GetAppoinementReturnsAppointmentWithSameIdAsync_ValidPatientId()
+        {
+            //Arrange
+            var mockRepo = new Mock<IAppointmentManager>();
+            mockRepo.Setup(x => x.GetAppointmentByIdAsync(2)).ReturnsAsync(GetAppointments().Where(a => a.Id == 2).First());
+
+            /*var controller = new AppointmentController(new AppointmentManager(new AppointmentRepository()));*/
+            var controller = new AppointmentController(mockRepo.Object);
+
+            //Act
+            var expected = GetAppointments().Where(a => a.Id == 2).First();
+            IHttpActionResult actionResult = await controller.Get(2);
+            var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
+            // Assert
+            Assert.AreEqual(expected.PatientId, contentResult.Content.PatientId);
+        }
+        [TestMethod]
+        public async Task GetAppoinementReturnsAppointmentWithSameIdAsync_ValidStatus()
+        {
+            //Arrange
+            var mockRepo = new Mock<IAppointmentManager>();
+            mockRepo.Setup(x => x.GetAppointmentByIdAsync(2)).ReturnsAsync(GetAppointments().Where(a => a.Id == 2).First());
+
+            /*var controller = new AppointmentController(new AppointmentManager(new AppointmentRepository()));*/
+            var controller = new AppointmentController(mockRepo.Object);
+
+            //Act
+            var expected = GetAppointments().Where(a => a.Id == 2).First();
+            IHttpActionResult actionResult = await controller.Get(2);
+            var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
+            // Assert
+            Assert.AreEqual(expected.Status, contentResult.Content.Status);
+        }
+
         [TestMethod]
         public async Task GetAppointmentsForPatientReturnsAppointments()
         {
@@ -78,17 +151,16 @@ namespace AppointmentUnitTest.API
             var contentResult = actionResult as OkNegotiatedContentResult<IQueryable<AppointmentAPIModel>>;
 
             //Assert
-            Assert.IsNotNull(contentResult);
-            Assert.IsNotNull(contentResult.Content);
+            
             Assert.AreEqual(appointments.Count, contentResult.Content.Count());
-            CollectionAssert.AreEqual(appointments, contentResult.Content.ToList());
+            //CollectionAssert.AreEqual(appointments, contentResult.Content.ToList());
         }
         
         [TestMethod]
-        public async Task AcceptAppointmentReturnsAcceptedAppointment()
+        public async Task AcceptAppointmentReturnsAcceptedAppointment_ValidStatus()
         {
             var mockRepo = new Mock<IAppointmentManager>();
-            mockRepo.Setup(x => x.AcceptAppointmentAsync(2)).ReturnsAsync(new AppointmentAPIModel { Status = "accepted" });
+            mockRepo.Setup(x => x.AcceptAppointmentAsync(2)).ReturnsAsync(new AppointmentAPIModel { Id=2, Status = "accepted" });
 
             var controller = new AppointmentController(mockRepo.Object);
 
@@ -97,12 +169,26 @@ namespace AppointmentUnitTest.API
 
             Assert.AreEqual("accepted", contentResult.Content.Status);
         }
-        
         [TestMethod]
-        public async Task RejectAppointmentReturnsRejectedAppointment()
+        public async Task AcceptAppointmentReturnsAcceptedAppointment_ValidId()
         {
             var mockRepo = new Mock<IAppointmentManager>();
-            mockRepo.Setup(x => x.RejectAppointmentAsync(2)).ReturnsAsync(new AppointmentAPIModel { Status = "rejected" });
+            mockRepo.Setup(x => x.AcceptAppointmentAsync(2)).ReturnsAsync(new AppointmentAPIModel { Id = 2, Status = "accepted" });
+
+            var controller = new AppointmentController(mockRepo.Object);
+
+            IHttpActionResult actionResult = await controller.Post(2);
+            var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
+
+            Assert.AreEqual(2, contentResult.Content.Id);
+            
+        }
+
+        [TestMethod]
+        public async Task RejectAppointmentReturnsRejectedAppointment_ValidStatus()
+        {
+            var mockRepo = new Mock<IAppointmentManager>();
+            mockRepo.Setup(x => x.RejectAppointmentAsync(2)).ReturnsAsync(new AppointmentAPIModel {Id=2, Status = "rejected" });
 
             var controller = new AppointmentController(mockRepo.Object);
 
@@ -110,6 +196,19 @@ namespace AppointmentUnitTest.API
             var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
 
             Assert.AreEqual("rejected", contentResult.Content.Status);
+        }
+        [TestMethod]
+        public async Task RejectAppointmentReturnsRejectedAppointment_ValidId()
+        {
+            var mockRepo = new Mock<IAppointmentManager>();
+            mockRepo.Setup(x => x.RejectAppointmentAsync(2)).ReturnsAsync(new AppointmentAPIModel { Id = 2, Status = "rejected" });
+
+            var controller = new AppointmentController(mockRepo.Object);
+
+            IHttpActionResult actionResult = await controller.PostReject(2);
+            var contentResult = actionResult as OkNegotiatedContentResult<AppointmentAPIModel>;
+
+            Assert.AreEqual(2, contentResult.Content.Id);
         }
         #endregion
 
