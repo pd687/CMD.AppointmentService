@@ -78,7 +78,6 @@
     <Compile Include="API\AppointmentAPIServiceTest.cs" />
     <Compile Include="Data\Repository\AppointmentRepoUnitTest.cs" />
     <Compile Include="Domain\ManagerUnitTestFolder\AppointmentManagerUnitTest.cs" />
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
