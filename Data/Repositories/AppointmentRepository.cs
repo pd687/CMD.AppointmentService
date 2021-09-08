@@ -65,7 +65,6 @@ namespace Data.Repositories
         public async Task<List<Appointment>> GetAllAppointmentsByPatientIdAsync(int patientId)
         {
             var appointments = await db.Appointments.Where(app => app.PatientId == patientId).ToListAsync();
-
             return appointments;
         }
         public async Task<Appointment> AcceptAppointmentAsync(int id)

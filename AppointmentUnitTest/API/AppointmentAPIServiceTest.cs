@@ -26,7 +26,6 @@ namespace AppointmentUnitTest.API
             var mockRepo = new Mock<IAppointmentManager>();
             mockRepo.Setup(x => x.GetAllAppointmentsAsync()).ReturnsAsync(GetAppointments().AsQueryable());
 
-            //var controller = new AppointmentController(new AppointmentManager(new AppointmentRepository()));
             var controller = new AppointmentController(mockRepo.Object);
 
             //Act
@@ -35,19 +34,7 @@ namespace AppointmentUnitTest.API
             var expected = GetAppointments();
             var actual = contentResult.Content.ToList();
             // Assert
-            #region commented
-            /*Assert.IsNotNull(contentResult);
-            Assert.IsNotNull(contentResult.Content);
-            for(int i = 0; i < expected.Count; i++)
-            {
-                Assert.AreEqual(expected[i].Id, actual[i].Id);
-                Assert.AreEqual(expected[i].AppointmentTime, actual[i].AppointmentTime);
-                Assert.AreEqual(expected[i].DoctorId, actual[i].DoctorId);
-                Assert.AreEqual(expected[i].PatientId, actual[i].PatientId);
-                Assert.AreEqual(expected[i].Status, actual[i].Status);
-            }
-            CollectionAssert.AreEqual(expected, actual);*/
-            #endregion
+            
             Assert.AreEqual(expected.Count, actual.Count);
         }
         [TestMethod]
@@ -57,7 +44,6 @@ namespace AppointmentUnitTest.API
             var mockRepo = new Mock<IAppointmentManager>();
             mockRepo.Setup(x => x.GetAppointmentByIdAsync(2)).ReturnsAsync(GetAppointments().Where(a => a.Id == 2).First());
 
-            /*var controller = new AppointmentController(new AppointmentManager(new AppointmentRepository()));*/
             var controller = new AppointmentController(mockRepo.Object);
 
             //Act
@@ -246,23 +232,6 @@ namespace AppointmentUnitTest.API
 
             //Assert
             Assert.AreNotEqual(expected.Count, actual.Count);
-        }
-        [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
-        public async Task InvalidAppointmentId_ShouldThrowException()
-        {
-            //Arrange
-            var appointment = GetAppointments().Where(a => a.Id == 11).FirstOrDefault();
-            var mockRepo = new Mock<IAppointmentManager>();
-            mockRepo.Setup(x => x.GetAppointmentByIdAsync(11)).ReturnsAsync(appointment);
-            var controller = new AppointmentController(mockRepo.Object);
-
-            //Act
-            IHttpActionResult actionResult = await controller.Get(11);
-            var contentResult = actionResult as OkNegotiatedContentResult<IQueryable<AppointmentAPIModel>>;
-            var expected = GetAppointments().Where(a => a.Id == 11).ToList();
-            var actual = contentResult.Content.ToList();
-
         }
 
         [TestMethod]

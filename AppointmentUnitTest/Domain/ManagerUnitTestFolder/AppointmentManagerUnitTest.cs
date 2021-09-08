@@ -43,7 +43,6 @@ namespace AppointmentAPIModelUnitTest.Domain.Manager
 
         }
 
-
         [TestMethod]
         public async Task GetAllAppointmentAsync_ShouldReturnSameAppointmentDoctorId()
         {
