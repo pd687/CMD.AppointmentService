@@ -59,6 +59,10 @@ namespace AppointmentAPIService.Controllers
 
         #region Async
         // GET api/appointment
+        /// <summary>
+        /// Returns all Appointments.
+        /// </summary>
+        /// <returns></returns>
         public async Task<IHttpActionResult> Get()
         {
             try
@@ -75,6 +79,11 @@ namespace AppointmentAPIService.Controllers
         }
 
         // GET api/appointment/5
+        /// <summary>
+        /// Returns Appointment by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IHttpActionResult> Get(int id)
         {
             try
@@ -98,7 +107,11 @@ namespace AppointmentAPIService.Controllers
         }
 
         // GET api/appointment/patient/5
-
+        /// <summary>
+        /// Returns the Appointments for Patient Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Route("patient/{id}")]
         public async Task<IHttpActionResult> GetAllAppointmentsByPatientId(int id)
         {
@@ -116,6 +129,11 @@ namespace AppointmentAPIService.Controllers
         }
 
         // POST api/appointment/accept/1
+        /// <summary>
+        /// Accepting an Appointment By Id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [Route("accept/{id}")]
         public async Task<IHttpActionResult> Post(int Id)
         {
@@ -131,7 +149,11 @@ namespace AppointmentAPIService.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Rejecting an Appointment by Id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         // POST api/appointment/reject/1
         [Route("reject/{id}")]
         public async Task<IHttpActionResult> PostReject(int Id)
